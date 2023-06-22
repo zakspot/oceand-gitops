@@ -1,0 +1,62 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: oceancd-workshop2
+  labels:
+    name: oceancd-workshop2
+
+---
+
+apiVersion: spot.io/v1beta1
+kind: SpotDeployment
+metadata:
+  name: nginx-deployment2
+  namespace: oceancd-workshop2
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: public.ecr.aws/nginx/nginx:1.19-perl
+        ports:
+        - containerPort: 8080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rollouts-demo-stable2
+  namespace: oceancd-workshop2
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rollouts-demo-canary2
+  namespace: oceancd-workshop2
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
